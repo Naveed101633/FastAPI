@@ -66,7 +66,7 @@ This project answers that by demonstrating:
 ## 🎨 UI Preview  
 
 ### Registration Form  
-![Register Form](http://127.0.0.1:8000/)  
+![Register Form](https://github.com/Naveed101633/FastAPI/blob/main/f1.png)  
 
 ### User List Table  
 ![User List](https://user-images.githubusercontent.com/placeholder/userlist-ui.png)  
