@@ -67,6 +67,7 @@ This project answers that by demonstrating:
 
 ### Registration Form  
 ![Register Form](https://github.com/Naveed101633/FastAPI/blob/main/f1.png)  
+![Register Form](https://github.com/Naveed101633/FastAPI/blob/main/f2.png)  
 
 ### User List Table  
 ![User List](https://user-images.githubusercontent.com/placeholder/userlist-ui.png)  
