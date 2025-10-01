@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cavallo Boutique Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="file"], input[type="text"], button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #response, #products {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 200px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cavallo Boutique Assistant</h1>
+    
+    <div class="section">
+        <h2>Upload PDF</h2>
+        <input type="file" id="pdfInput" accept=".pdf">
+        <button onclick="uploadPDF()">Upload PDF</button>
+        <div id="pdfResponse"></div>
+    </div>
+
+    <div class="section">
+        <h2>Ask a Question</h2>
+        <label for="queryInput">Query:</label>
+        <input type="text" id="queryInput" placeholder="e.g., Show me dresses or Where is the shop?">
+        <button onclick="sendQuery()">Send Query</button>
+        <div id="response"></div>
+        <div id="products"></div>
+    </div>
+
+    <script>
+        async function uploadPDF() {
+            const pdfInput = document.getElementById('pdfInput');
+            const pdfResponse = document.getElementById('pdfResponse');
+            if (!pdfInput.files[0]) {
+                pdfResponse.innerText = "Please select a PDF file.";
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', pdfInput.files[0]);
+            try {
+                const response = await fetch('http://localhost:8001/upload_pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                pdfResponse.innerText = result.message || "Error uploading PDF.";
+            } catch (error) {
+                pdfResponse.innerText = `Error: ${error.message}`;
+            }
+        }
+
+        async function sendQuery() {
+            const queryInput = document.getElementById('queryInput').value;
+            const responseDiv = document.getElementById('response');
+            const productsDiv = document.getElementById('products');
+            responseDiv.innerText = '';
+            productsDiv.innerHTML = '';
+            if (!queryInput) {
+                responseDiv.innerText = "Please enter a query.";
+                return;
+            }
+            try {
+                const response = await fetch('http://localhost:8001/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: queryInput, session_id: 'test_session' })
+                });
+                const result = await response.json();
+                if (result.products) {
+                    result.products.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.innerHTML = `
+                            <p><strong>${product.product_name}</strong>: ${product.description} ($${product.price})</p>
+                            ${product.image_url ? `<img src="${product.image_url}" alt="${product.product_name}">` : '<p>No image available</p>'}
+                        `;
+                        productsDiv.appendChild(productDiv);
+                    });
+                } else {
+                    responseDiv.innerText = result.response || "No response generated.";
+                }
+            } catch (error) {
+                responseDiv.innerText = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
