@@ -66,7 +66,7 @@ This project answers that by demonstrating:
 ## 🎨 UI Preview  
 
 ### Registration Form  
-![Register Form](https://user-images.githubusercontent.com/placeholder/register-ui.png)  
+![Register Form](http://127.0.0.1:8000/)  
 
 ### User List Table  
 ![User List](https://user-images.githubusercontent.com/placeholder/userlist-ui.png)  
